@@ -1,22 +1,20 @@
 use argh::FromArgs;
 use axum::{
-    body::{Body, Bytes},
     handler::Handler,
     headers::ContentType,
-    http::{Request, StatusCode, Uri},
-    middleware::{self, Next},
-    response::{IntoResponse, Response},
+    http::{StatusCode, Uri},
+    middleware,
+    response::IntoResponse,
     routing::post,
-    Json, Router, TypedHeader,
+    Router, TypedHeader,
 };
 use log::LevelFilter;
 use mecab_server::{
     middleware as my_middleware,
     shared::{ApiError, ErrMsgJsonGenerator},
 };
-use serde_json::{json, Value};
 use std::net::SocketAddr;
-use tracing::{debug, info};
+use tracing::info;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[derive(FromArgs)]
@@ -36,7 +34,7 @@ fn init_logger(is_verbose: bool) {
     tracing_subscriber::registry()
         .with(tracing_subscriber::EnvFilter::new(format!(
             "mecab_server={}",
-            crate_log_level.to_string()
+            crate_log_level
         )))
         .with(tracing_subscriber::fmt::layer())
         .init();
