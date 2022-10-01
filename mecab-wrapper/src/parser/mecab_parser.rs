@@ -14,8 +14,8 @@ pub struct MecabParser(Tagger);
 impl Parser for MecabParser {
     type ParserResult = MecabParserResult;
 
-    fn new(args: Option<String>) -> Self {
-        Self(Tagger::new(args.unwrap_or_default()))
+    fn new(args: Option<String>) -> anyhow::Result<Self> {
+        Ok(Self(Tagger::new(args.unwrap_or_default())))
     }
 
     fn parse<T: ToString>(&self, input: T) -> Vec<Self::ParserResult> {
@@ -65,7 +65,7 @@ impl MecabParser {
             .map(|s| format!("{} {}", dic_path, s))
             .unwrap_or(dic_path);
 
-        Ok(Self::new(Some(args)))
+        Ok(Self::new(Some(args))?)
     }
 }
 
@@ -81,14 +81,14 @@ mod test {
 
     #[test]
     fn parse_empty_string_should_return_empty_vec() {
-        let parser = MecabParser::new(None);
+        let parser = MecabParser::new(None).unwrap();
         assert!(parser.parse("").is_empty())
     }
 
     #[test]
     fn parse_string_should_return_result() {
         // NOTE: Mecab default dictionary should be IPADIC, so the expected result format is IPADIC.
-        let parser = MecabParser::new(None);
+        let parser = MecabParser::new(None).unwrap();
         let expected = MecabParserResult::new(
             "あ".to_string(),
             vec!["フィラー", "*", "*", "*", "*", "*", "あ", "ア", "ア"]
