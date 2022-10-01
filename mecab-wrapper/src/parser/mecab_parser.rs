@@ -1,3 +1,4 @@
+use crate::parser::Parser;
 use itertools::Itertools;
 use mecab::Tagger;
 use std::path::PathBuf;
@@ -10,32 +11,14 @@ pub struct MecabParserResult {
 
 pub struct MecabParser(Tagger);
 
-impl MecabParser {
-    pub fn new(args: Option<String>) -> Self {
+impl Parser for MecabParser {
+    type ParserResult = MecabParserResult;
+
+    fn new(args: Option<String>) -> Self {
         Self(Tagger::new(args.unwrap_or_default()))
     }
 
-    pub fn with_custom_dic<T: Into<PathBuf>>(
-        dic_path: T,
-        other_args: Option<String>,
-    ) -> anyhow::Result<Self> {
-        let dic_path = dic_path.into();
-        anyhow::ensure!(dic_path.exists(), "The path to dictionary doesn't exist");
-        let dic_path = dic_path.to_str();
-        anyhow::ensure!(
-            dic_path.is_some(),
-            "The string of the path to dictionary must be valid unicode"
-        );
-
-        let dic_path = format!("-d {}", dic_path.unwrap());
-        let args = other_args
-            .map(|s| format!("{} {}", dic_path, s))
-            .unwrap_or(dic_path);
-
-        Ok(Self::new(Some(args)))
-    }
-
-    pub fn parse<T: ToString>(&self, input: T) -> Vec<MecabParserResult> {
+    fn parse<T: ToString>(&self, input: T) -> Vec<Self::ParserResult> {
         // 形態素解析
         let parsed = self.0.parse_str(input.to_string());
         // 各単語ごとに分割
@@ -61,6 +44,28 @@ impl MecabParser {
                 )
             })
             .collect_vec()
+    }
+}
+
+impl MecabParser {
+    pub fn with_custom_dic<T: Into<PathBuf>>(
+        dic_path: T,
+        other_args: Option<String>,
+    ) -> anyhow::Result<Self> {
+        let dic_path = dic_path.into();
+        anyhow::ensure!(dic_path.exists(), "The path to dictionary doesn't exist");
+        let dic_path = dic_path.to_str();
+        anyhow::ensure!(
+            dic_path.is_some(),
+            "The string of the path to dictionary must be valid unicode"
+        );
+
+        let dic_path = format!("-d {}", dic_path.unwrap());
+        let args = other_args
+            .map(|s| format!("{} {}", dic_path, s))
+            .unwrap_or(dic_path);
+
+        Ok(Self::new(Some(args)))
     }
 }
 
