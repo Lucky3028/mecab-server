@@ -7,7 +7,7 @@ use std::path::PathBuf;
 #[derive(derive_new::new, Debug, Eq, PartialEq)]
 pub struct MecabParserResult {
     pub word: String,
-    pub details: Vec<String>,
+    pub details: Vec<Option<String>>,
 }
 
 pub struct MecabParser(Tagger);
@@ -41,6 +41,7 @@ impl Parser for MecabParser {
                         .into_iter()
                         .flat_map(|s| s.split(",").collect_vec())
                         .map(|s| s.to_string())
+                        .map(|s| if s == "*" { None } else { Some(s) })
                         .collect_vec(),
                 )
             })
@@ -96,10 +97,20 @@ mod test {
         let parser = MecabParser::new(None).unwrap();
         let expected = MecabParserResult::new(
             "あ".to_string(),
-            vec!["フィラー", "*", "*", "*", "*", "*", "あ", "ア", "ア"]
-                .into_iter()
-                .map(|s| s.to_string())
-                .collect_vec(),
+            vec![
+                Some("フィラー"),
+                None,
+                None,
+                None,
+                None,
+                None,
+                Some("あ"),
+                Some("ア"),
+                Some("ア"),
+            ]
+            .into_iter()
+            .map(|s| s.map(|s| s.to_string()))
+            .collect_vec(),
         );
         assert_eq!(parser.parse("あ").unwrap(), vec![expected]);
     }

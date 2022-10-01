@@ -1,21 +1,22 @@
 use crate::parser::{MecabParser, MecabParserResult, Parser, ParserError};
+use itertools::Itertools;
 
 #[derive(derive_new::new, Debug)]
 pub struct NeologdParserResult {
     /// 単語
     pub input: String,
     /// 品詞
-    pub part_of_speech: String,
+    pub part_of_speech: Option<String>,
     /// 品詞（詳細）
     pub parts_of_speech_subtyping: Vec<String>,
     /// 活用型
-    pub conjugation_type: String,
+    pub conjugation_type: Option<String>,
     /// 活用形
-    pub conjugated_form: String,
+    pub conjugated_form: Option<String>,
     /// 原形
-    pub original_form: String,
+    pub original_form: Option<String>,
     /// 読み
-    pub reading: String,
+    pub reading: Option<String>,
 }
 
 const EXPECTED_DETAILS_ELEMENTS: usize = 8;
@@ -26,18 +27,18 @@ impl From<MecabParserResult> for Option<NeologdParserResult> {
             return None;
         }
 
+        let parts_of_speech_subtyping = (1..=3)
+            .flat_map(|idx| value.details.get(idx).unwrap().to_owned())
+            .collect_vec();
+
         Some(NeologdParserResult::new(
             value.word,
-            value.details.get(0).unwrap().to_string(),
-            vec![
-                value.details.get(1).unwrap().to_string(),
-                value.details.get(2).unwrap().to_string(),
-                value.details.get(3).unwrap().to_string(),
-            ],
-            value.details.get(4).unwrap().to_string(),
-            value.details.get(5).unwrap().to_string(),
-            value.details.get(6).unwrap().to_string(),
-            value.details.get(7).unwrap().to_string(),
+            value.details.get(0).unwrap().to_owned(),
+            parts_of_speech_subtyping,
+            value.details.get(4).unwrap().to_owned(),
+            value.details.get(5).unwrap().to_owned(),
+            value.details.get(6).unwrap().to_owned(),
+            value.details.get(7).unwrap().to_owned(),
         ))
     }
 }
