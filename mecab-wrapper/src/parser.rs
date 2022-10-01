@@ -1,6 +1,9 @@
 mod mecab_parser;
 pub use mecab_parser::*;
 
+mod neologd_parser;
+pub use neologd_parser::*;
+
 pub trait Parser {
     type ParserResult;
 
