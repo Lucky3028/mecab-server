@@ -1,13 +1,13 @@
 use crate::parser::{MecabParser, MecabParserResult, Parser, ParserError};
 
-#[derive(derive_new::new)]
+#[derive(derive_new::new, Debug)]
 pub struct NeologdParserResult {
     /// 単語
     pub input: String,
     /// 品詞
     pub part_of_speech: String,
     /// 品詞（詳細）
-    pub part_of_speech_subtyping: String,
+    pub parts_of_speech_subtyping: Vec<String>,
     /// 活用型
     pub conjugation_type: String,
     /// 活用形
@@ -16,11 +16,9 @@ pub struct NeologdParserResult {
     pub original_form: String,
     /// 読み
     pub reading: String,
-    /// 注釈
-    pub annotations: String,
 }
 
-const EXPECTED_DETAILS_ELEMENTS: usize = 7;
+const EXPECTED_DETAILS_ELEMENTS: usize = 8;
 
 impl From<MecabParserResult> for Option<NeologdParserResult> {
     fn from(value: MecabParserResult) -> Self {
@@ -31,12 +29,15 @@ impl From<MecabParserResult> for Option<NeologdParserResult> {
         Some(NeologdParserResult::new(
             value.word,
             value.details.get(0).unwrap().to_string(),
-            value.details.get(1).unwrap().to_string(),
-            value.details.get(2).unwrap().to_string(),
-            value.details.get(3).unwrap().to_string(),
+            vec![
+                value.details.get(1).unwrap().to_string(),
+                value.details.get(2).unwrap().to_string(),
+                value.details.get(3).unwrap().to_string(),
+            ],
             value.details.get(4).unwrap().to_string(),
             value.details.get(5).unwrap().to_string(),
             value.details.get(6).unwrap().to_string(),
+            value.details.get(7).unwrap().to_string(),
         ))
     }
 }
