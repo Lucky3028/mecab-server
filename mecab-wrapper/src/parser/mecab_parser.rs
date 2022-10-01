@@ -2,7 +2,7 @@ use itertools::Itertools;
 use mecab::Tagger;
 use std::path::PathBuf;
 
-#[derive(derive_new::new, Debug)]
+#[derive(derive_new::new, Debug, Eq, PartialEq)]
 pub struct MecabParserResult {
     pub word: String,
     pub details: Vec<String>,
@@ -61,5 +61,36 @@ impl MecabParser {
                 )
             })
             .collect_vec()
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn create_parser_with_illegal_dic_path_should_return_err() {
+        let res = MecabParser::with_custom_dic("The dir path doesn't exist", None);
+        assert!(res.is_err());
+    }
+
+    #[test]
+    fn parse_empty_string_should_return_empty_vec() {
+        let parser = MecabParser::new(None);
+        assert!(parser.parse("").is_empty())
+    }
+
+    #[test]
+    fn parse_string_should_return_result() {
+        // NOTE: Mecab default dictionary should be IPADIC, so the expected result format is IPADIC.
+        let parser = MecabParser::new(None);
+        let expected = MecabParserResult::new(
+            "あ".to_string(),
+            vec!["フィラー", "*", "*", "*", "*", "*", "あ", "ア", "ア"]
+                .into_iter()
+                .map(|s| s.to_string())
+                .collect_vec(),
+        );
+        assert_eq!(parser.parse("あ"), vec![expected]);
     }
 }
