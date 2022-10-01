@@ -4,33 +4,33 @@ use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
 };
-use tracing::info;
+use mecab_wrapper::parser::ParserError;
+use tracing::error;
 
 #[derive(Debug, thiserror::Error)]
 pub enum ApiError {
-    #[error("{0:?}")]
-    Unknown(anyhow::Error),
-    #[error("Content-Type must be '{0}'")]
-    UnexpectedContentType(ContentType),
+    #[error("An error has occurred while parsing contents: {0}")]
+    ParserError(#[from] ParserError),
+    #[error(transparent)]
+    Unknown(#[from] anyhow::Error),
 }
 
 impl IntoResponse for ApiError {
     fn into_response(self) -> Response {
         let (status, err_msg) = match self {
-            Self::Unknown(ref e) => {
-                info!("Unknown Error! Here's stacktrace: {:?}", e);
-                (StatusCode::INTERNAL_SERVER_ERROR, self.to_string())
+            Self::ParserError(_) => {
+                let err_msg = self.to_string();
+                error!("Parser Error! Here's the error message: {:?}", err_msg);
+                (StatusCode::INTERNAL_SERVER_ERROR, err_msg)
             }
-            Self::UnexpectedContentType(_) => (StatusCode::BAD_REQUEST, self.to_string()),
+            Self::Unknown(_) => {
+                let err_msg = self.to_string();
+                error!("Unknown Error! Here's the error message: {:?}", err_msg);
+                (StatusCode::INTERNAL_SERVER_ERROR, err_msg)
+            }
         };
         let body = ErrMsgJsonGenerator::new(err_msg).generate();
 
         (status, body).into_response()
-    }
-}
-
-impl From<anyhow::Error> for ApiError {
-    fn from(inner: anyhow::Error) -> Self {
-        ApiError::Unknown(inner)
     }
 }
