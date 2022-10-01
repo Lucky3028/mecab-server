@@ -1,4 +1,5 @@
-use crate::parser::Parser;
+use crate::parser::{Parser, ParserError};
+use anyhow::ensure;
 use itertools::Itertools;
 use mecab::Tagger;
 use std::path::PathBuf;
@@ -18,7 +19,7 @@ impl Parser for MecabParser {
         Ok(Self(Tagger::new(args.unwrap_or_default())))
     }
 
-    fn parse<T: ToString>(&self, input: T) -> Vec<Self::ParserResult> {
+    fn parse<T: ToString>(&self, input: T) -> anyhow::Result<Vec<Self::ParserResult>> {
         // 形態素解析
         let parsed = self.0.parse_str(input.to_string());
         // 各単語ごとに分割
@@ -29,7 +30,7 @@ impl Parser for MecabParser {
             // 「EOS」と改行が含まれているので排除
             .dropping_back(2);
 
-        parsed
+        Ok(parsed
             // 単語と形態の配列に分離
             .map(|s| s.split("\t").collect_vec())
             .flat_map(|v| v.split_first().map(|t| (t.0.to_owned(), t.1.to_owned())))
@@ -43,7 +44,7 @@ impl Parser for MecabParser {
                         .collect_vec(),
                 )
             })
-            .collect_vec()
+            .collect_vec())
     }
 }
 
@@ -53,11 +54,11 @@ impl MecabParser {
         other_args: Option<String>,
     ) -> anyhow::Result<Self> {
         let dic_path = dic_path.into();
-        anyhow::ensure!(dic_path.exists(), "The path to dictionary doesn't exist");
+        ensure!(dic_path.exists(), ParserError::DictionaryIsNotFound);
         let dic_path = dic_path.to_str();
-        anyhow::ensure!(
+        ensure!(
             dic_path.is_some(),
-            "The string of the path to dictionary must be valid unicode"
+            ParserError::DictionaryPathMustBeEncodedWithUnicode
         );
 
         let dic_path = format!("-d {}", dic_path.unwrap());
@@ -77,6 +78,10 @@ mod test {
     fn create_parser_with_illegal_dic_path_should_return_err() {
         let res = MecabParser::with_custom_dic("The dir path doesn't exist", None);
         assert!(res.is_err());
+        assert_eq!(
+            res.err().unwrap().downcast::<ParserError>().unwrap(),
+            ParserError::DictionaryIsNotFound
+        );
     }
 
     #[test]
