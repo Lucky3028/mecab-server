@@ -76,7 +76,7 @@ impl From<NeologdParserResult> for ParserResultResponse {
 
 #[derive(Serialize)]
 struct ParseResponse {
-    results: Vec<ParserResultResponse>,
+    results: Vec<Vec<ParserResultResponse>>,
 }
 
 async fn parse(Json(parse_req): Json<ParseRequest>) -> Result<impl IntoResponse, ApiError> {
@@ -85,7 +85,7 @@ async fn parse(Json(parse_req): Json<ParseRequest>) -> Result<impl IntoResponse,
         .texts
         .into_iter()
         .flat_map(|s| parser.parse(s))
-        .flat_map(|v| v.into_iter().map(|r| r.into()).collect_vec())
+        .map(|v| v.into_iter().map(|r| r.into()).collect_vec())
         .collect_vec();
     let results = Json(ParseResponse { results });
 
