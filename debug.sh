@@ -1,2 +1,2 @@
 #!/bin/bash
-cargo run -- -v
+cargo run -p mecab-server -- -v
