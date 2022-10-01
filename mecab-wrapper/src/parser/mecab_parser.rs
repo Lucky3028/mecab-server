@@ -87,7 +87,7 @@ mod test {
     #[test]
     fn parse_empty_string_should_return_empty_vec() {
         let parser = MecabParser::new(None).unwrap();
-        assert!(parser.parse("").is_empty())
+        assert!(parser.parse("").unwrap().is_empty())
     }
 
     #[test]
@@ -101,6 +101,6 @@ mod test {
                 .map(|s| s.to_string())
                 .collect_vec(),
         );
-        assert_eq!(parser.parse("あ"), vec![expected]);
+        assert_eq!(parser.parse("あ").unwrap(), vec![expected]);
     }
 }
