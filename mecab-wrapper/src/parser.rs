@@ -4,8 +4,10 @@ pub use mecab_parser::*;
 pub trait Parser {
     type ParserResult;
 
-    fn new(args: Option<String>) -> anyhow::Result<Self>;
-    fn parse<T: ToString>(&self, input: T) -> Vec<Self::ParserResult>;
+    fn new(args: Option<String>) -> anyhow::Result<Self>
+    where
+        Self: Sized;
+    fn parse<T: ToString>(&self, input: T) -> anyhow::Result<Vec<Self::ParserResult>>;
 }
 
 #[derive(thiserror::Error, Debug, PartialEq)]
