@@ -8,6 +8,7 @@ edition.workspace = true
 [dependencies]
 anyhow.workspace = true
 itertools.workspace = true
+thiserror.workspace = true
 
 derive-new = "0.5"
 mecab = "0.1"

@@ -434,6 +434,7 @@ dependencies = [
  "derive-new",
  "itertools",
  "mecab",
+ "thiserror",
 ]
 
 [[package]]
