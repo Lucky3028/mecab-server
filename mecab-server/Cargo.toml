@@ -12,6 +12,8 @@ derive-new.workspace = true
 itertools.workspace = true
 thiserror.workspace = true
 
+mecab-wrapper = { path = "../mecab-wrapper" }
+
 argh = "0.1"
 axum = { version = "0.5", features = ["headers"] }
 hyper = "0.14"

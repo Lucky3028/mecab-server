@@ -9,5 +9,6 @@ edition = "2021"
 
 [workspace.dependencies]
 anyhow = "1.0"
+derive-new = "0.5"
 itertools = "0.10"
 thiserror = "1.0"
