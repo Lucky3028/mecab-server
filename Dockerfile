@@ -34,6 +34,6 @@ COPY --from=prepare --link /usr/bin/mecab /usr/bin/
 COPY --from=build --link /app/target/x86_64-unknown-linux-musl/release/mecab-server /mecab-server
 
 USER nonroot
-ENV NEOLOGD_DIC_PATH /usr/local/lib/mecab/dic/mecab-ipadic-neologd
+ENV NEOLOGD_DIC_PATH /usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd
 
 ENTRYPOINT ["/mecab-server"]
