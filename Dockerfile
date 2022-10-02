@@ -29,7 +29,7 @@ RUN apt-get update \
     && git clone https://github.com/neologd/mecab-ipadic-neologd.git --depth=1 \
     && cd mecab-ipadic-neologd \
     && ./bin/install-mecab-ipadic-neologd -y -n -a \
-    && apt-get uninstall -y g++ git make curl sudo file xz-utils libmecab-dev \
+    && apt-get remove -y g++ git make curl sudo file xz-utils libmecab-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
