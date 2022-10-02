@@ -1,6 +1,5 @@
 use crate::shared::ErrMsgJsonGenerator;
 use axum::{
-    headers::ContentType,
     http::StatusCode,
     response::{IntoResponse, Response},
 };
@@ -12,7 +11,7 @@ pub enum ApiError {
     #[error("An error has occurred while parsing contents: {0}")]
     ParserError(#[from] ParserError),
     #[error(transparent)]
-    Unknown(#[from] anyhow::Error),
+    Unknown(anyhow::Error),
 }
 
 impl IntoResponse for ApiError {

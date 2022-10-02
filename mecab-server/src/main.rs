@@ -1,12 +1,11 @@
 use argh::FromArgs;
 use axum::{
     handler::Handler,
-    headers::ContentType,
     http::{StatusCode, Uri},
     middleware,
     response::IntoResponse,
     routing::post,
-    Json, Router, TypedHeader,
+    Json, Router,
 };
 use derive_new::new;
 use itertools::Itertools;
