@@ -5,17 +5,10 @@ use axum::{
     middleware,
     response::IntoResponse,
     routing::post,
-    Json, Router,
+    Router,
 };
-use derive_new::new;
-use itertools::Itertools;
 use log::LevelFilter;
-use mecab_server::{
-    handler, middleware as my_middleware,
-    shared::{ApiError, ErrMsgJsonGenerator},
-};
-use mecab_wrapper::parser::{NeoglogdParser, NeologdParserResult, Parser};
-use serde::{Deserialize, Serialize};
+use mecab_server::{handler, middleware as my_middleware, shared::ErrMsgJsonGenerator};
 use std::net::SocketAddr;
 use tracing::info;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
