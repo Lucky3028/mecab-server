@@ -24,6 +24,7 @@ FROM chef AS build
 COPY --from=planner --link /app/recipe.json recipe.json
 RUN cargo chef cook --release --target x86_64-unknown-linux-musl --recipe-path recipe.json
 
+COPY --from=prepare --link /usr/local/lib /usr/local/
 COPY --link . .
 RUN cargo build --target x86_64-unknown-linux-musl --release
 
