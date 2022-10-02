@@ -21,7 +21,7 @@ RUN cargo chef cook --release --target x86_64-unknown-linux-musl --recipe-path r
 COPY --link . .
 RUN cargo build --target x86_64-unknown-linux-musl --release
 
-FROM ubuntu:22.04-slim
+FROM debian:stable-slim
 
 RUN apt-get update \
     && apt-get install -y g++ git make curl sudo file xz-utils mecab libmecab-dev mecab-ipadic-utf8 \
