@@ -25,12 +25,10 @@ RUN cargo build --target x86_64-unknown-linux-musl --release
 FROM gcr.io/distroless/cc:debug
 
 WORKDIR /var
-RUN apk update \
-    && apk --update --no-cache add -y g++ git make curl sudo file xz-utils mecab libmecab-dev mecab-ipadic-utf8
+RUN /busybox/sh -c "apk update && apk --update --no-cache add -y g++ git make curl sudo file xz-utils mecab libmecab-dev mecab-ipadic-utf8"
 RUN git clone https://github.com/neologd/mecab-ipadic-neologd.git --depth=1 \
     && ./mecab-ipadic-neologd/bin/install-mecab-ipadic-neologd -y -n -a
-RUN apk del --purge -y g++ git make curl sudo file xz-utils \
-    && rm -rf /var/lib/apt/lists/*
+RUN /busybox/sh -c "apk del --purge -y g++ git make curl sudo file xz-utils"
 
 WORKDIR /
 COPY --from=build --link /app/target/x86_64-unknown-linux-musl/release/mecab-server /mecab-server
