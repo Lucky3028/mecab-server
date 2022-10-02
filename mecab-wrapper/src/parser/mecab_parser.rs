@@ -96,20 +96,10 @@ mod test {
         let parser = MecabParser::new(None).unwrap();
         let expected = MecabParserResult::new(
             "あ".to_string(),
-            vec![
-                Some("フィラー"),
-                None,
-                None,
-                None,
-                None,
-                None,
-                Some("あ"),
-                Some("ア"),
-                Some("ア"),
-            ]
-            .into_iter()
-            .map(|s| s.map(|s| s.to_string()))
-            .collect_vec(),
+            vec!["フィラー", "*", "*", "*", "*", "*", "あ", "ア", "ア"]
+                .into_iter()
+                .map(|s| s.map(|s| s.to_string()))
+                .collect_vec(),
         );
         assert_eq!(parser.parse("あ").unwrap(), vec![expected]);
     }
