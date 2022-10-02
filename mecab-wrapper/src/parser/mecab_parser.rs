@@ -1,4 +1,4 @@
-use crate::parser::{Parser, ParserError};
+use super::{Parser, ParserError};
 use anyhow::ensure;
 use itertools::Itertools;
 use mecab::Tagger;

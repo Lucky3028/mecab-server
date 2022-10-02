@@ -1,4 +1,4 @@
-use crate::parser::{MecabParser, MecabParserResult, Parser, ParserError};
+use super::{MecabParser, MecabParserResult, Parser, ParserError};
 use itertools::Itertools;
 
 #[derive(derive_new::new, Debug)]
