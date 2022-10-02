@@ -98,7 +98,7 @@ mod test {
             "あ".to_string(),
             vec!["フィラー", "*", "*", "*", "*", "*", "あ", "ア", "ア"]
                 .into_iter()
-                .map(|s| s.map(|s| s.to_string()))
+                .map(|s| s.to_string())
                 .collect_vec(),
         );
         assert_eq!(parser.parse("あ").unwrap(), vec![expected]);
