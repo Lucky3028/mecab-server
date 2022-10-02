@@ -29,6 +29,7 @@ impl From<MecabParserResult> for Option<NeologdParserResult> {
 
         let parts_of_speech_subtyping = (1..=3)
             .map(|idx| value.details.get(idx).unwrap().to_owned())
+            .filter(|s| s != "*")
             .collect_vec();
 
         Some(NeologdParserResult::new(
