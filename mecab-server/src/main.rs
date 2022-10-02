@@ -11,7 +11,7 @@ use derive_new::new;
 use itertools::Itertools;
 use log::LevelFilter;
 use mecab_server::{
-    middleware as my_middleware,
+    handler, middleware as my_middleware,
     shared::{ApiError, ErrMsgJsonGenerator},
 };
 use mecab_wrapper::parser::{NeoglogdParser, NeologdParserResult, Parser};
@@ -43,54 +43,6 @@ fn init_logger(is_verbose: bool) {
         .init();
 }
 
-#[derive(Deserialize)]
-struct ParseRequest {
-    texts: Vec<String>,
-}
-
-#[derive(Serialize, new)]
-struct ParserResultResponse {
-    pub input: String,
-    pub part_of_speech: String,
-    pub parts_of_speech_subtyping: Vec<String>,
-    pub conjugation_type: String,
-    pub conjugated_form: String,
-    pub original_form: String,
-    pub reading: String,
-}
-
-impl From<NeologdParserResult> for ParserResultResponse {
-    fn from(res: NeologdParserResult) -> Self {
-        Self::new(
-            res.input,
-            res.part_of_speech,
-            res.parts_of_speech_subtyping,
-            res.conjugation_type,
-            res.conjugated_form,
-            res.original_form,
-            res.reading,
-        )
-    }
-}
-
-#[derive(Serialize)]
-struct ParseResponse {
-    results: Vec<Vec<ParserResultResponse>>,
-}
-
-async fn parse(Json(parse_req): Json<ParseRequest>) -> Result<impl IntoResponse, ApiError> {
-    let parser = NeoglogdParser::new(None)?;
-    let results = parse_req
-        .texts
-        .into_iter()
-        .flat_map(|s| parser.parse(s))
-        .map(|v| v.into_iter().map(|r| r.into()).collect_vec())
-        .collect_vec();
-    let results = Json(ParseResponse { results });
-
-    Ok((StatusCode::OK, results))
-}
-
 #[tokio::main]
 async fn main() {
     let arg: Arg = argh::from_env();
@@ -99,7 +51,7 @@ async fn main() {
     let socket = SocketAddr::from(([0, 0, 0, 0], 3000));
     info!("Server listening on {}", socket);
     let app = Router::new()
-        .route("/parse", post(parse))
+        .route("/parse", post(handler::parse))
         .fallback(fallback.into_service())
         .layer(middleware::from_fn(my_middleware::print_request_response));
 
