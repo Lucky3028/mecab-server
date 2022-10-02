@@ -8,7 +8,8 @@ RUN apt-get update \
     && cd mecab-ipadic-neologd \
     && ./bin/install-mecab-ipadic-neologd -y -n -a \
     && mecab-config --dicdir \
-    && mecab-config --sysconfdir
+    && mecab-config --sysconfdir \
+    && which mecab
 
 # clux/muslrust doesn't release 1.64.0 stable image at 2022/10/02
 FROM clux/muslrust:1.64.0-nightly-2022-08-06 AS chef
