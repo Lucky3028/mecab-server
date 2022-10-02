@@ -34,3 +34,11 @@ impl IntoResponse for ApiError {
         (status, body).into_response()
     }
 }
+
+impl From<anyhow::Error> for ApiError {
+    fn from(e: anyhow::Error) -> Self {
+        e.downcast::<ParserError>()
+            .map(Self::ParserError)
+            .unwrap_or_else(Self::Unknown)
+    }
+}
