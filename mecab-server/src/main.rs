@@ -63,12 +63,12 @@ impl From<NeologdParserResult> for ParserResultResponse {
     fn from(res: NeologdParserResult) -> Self {
         Self::new(
             res.input,
-            res.part_of_speech.unwrap_or_default(),
+            res.part_of_speech,
             res.parts_of_speech_subtyping,
-            res.conjugation_type.unwrap_or_default(),
-            res.conjugated_form.unwrap_or_default(),
-            res.original_form.unwrap_or_default(),
-            res.reading.unwrap_or_default(),
+            res.conjugation_type,
+            res.conjugated_form,
+            res.original_form,
+            res.reading,
         )
     }
 }
