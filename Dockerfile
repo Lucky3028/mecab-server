@@ -10,7 +10,8 @@ RUN apt-get update \
     && ./bin/install-mecab-ipadic-neologd -y -n -a
 
 ### Builder ###
-FROM clux/muslrust:1.63.0 AS chef
+# muslrust/1.64.0 has not been released yet at 2022/10/02
+FROM clux/muslrust:1.64.0-nightly-2022-08-06 AS chef
 
 RUN cargo install cargo-chef
 WORKDIR /app
