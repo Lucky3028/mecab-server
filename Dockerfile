@@ -2,8 +2,8 @@
 ### Prepare for Runner ###
 FROM ubuntu:22.04 AS prepare
 
-RUN apt update \
-    && apt install -y g++ git make curl sudo file xz-utils mecab libmecab-dev mecab-ipadic-utf8 \
+RUN apt-get update \
+    && apt-get install -y g++ git make curl sudo file xz-utils mecab libmecab-dev mecab-ipadic-utf8 \
     && cd /var \
     && git clone https://github.com/neologd/mecab-ipadic-neologd.git --depth=1 \
     && cd mecab-ipadic-neologd \
