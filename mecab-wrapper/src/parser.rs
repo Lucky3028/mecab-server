@@ -19,7 +19,7 @@ pub enum ParserError {
     DictionaryIsNotFound,
     #[error("The string of the path to dictionary must be valid unicode")]
     DictionaryPathMustBeEncodedWithUnicode,
-    #[error("The env var is not set: {key}")]
+    #[error("The env var ({key}) is not set")]
     EnvVarIsNotSet { key: String },
     #[error("The parser result must have {at_least} detail elements at least")]
     ParserResultHasIllegalState { at_least: usize },
