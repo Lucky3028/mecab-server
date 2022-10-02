@@ -22,7 +22,7 @@ RUN cargo chef prepare --recipe-path recipe.json
 
 FROM chef AS build
 RUN apt-get update \
-    && apt-get install -y mecab mecab-ipadic-utf8 \
+    && apt-get install -y mecab libmecab-dev mecab-ipadic-utf8 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -35,7 +35,7 @@ RUN cargo build --target x86_64-unknown-linux-musl --release
 FROM debian:stable-slim
 
 RUN apt-get update \
-    && apt-get install -y mecab mecab-ipadic-utf8 \
+    && apt-get install -y mecab libmecab-dev mecab-ipadic-utf8 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
