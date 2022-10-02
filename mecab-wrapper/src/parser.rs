@@ -5,12 +5,12 @@ mod neologd_parser;
 pub use neologd_parser::*;
 
 pub trait Parser {
-    type ParserResult;
+    type Parsed;
 
     fn new(args: Option<String>) -> anyhow::Result<Self>
     where
         Self: Sized;
-    fn parse<T: ToString>(&self, input: T) -> anyhow::Result<Vec<Self::ParserResult>>;
+    fn parse<T: ToString>(&self, input: T) -> anyhow::Result<Vec<Self::Parsed>>;
 }
 
 #[derive(thiserror::Error, Debug, PartialEq)]

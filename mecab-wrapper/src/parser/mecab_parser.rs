@@ -7,19 +7,19 @@ use std::path::PathBuf;
 #[derive(derive_new::new, Debug, Eq, PartialEq)]
 pub struct MecabParserResult {
     pub word: String,
-    pub details: Vec<Option<String>>,
+    pub details: Vec<String>,
 }
 
 pub struct MecabParser(Tagger);
 
 impl Parser for MecabParser {
-    type ParserResult = MecabParserResult;
+    type Parsed = MecabParserResult;
 
     fn new(args: Option<String>) -> anyhow::Result<Self> {
         Ok(Self(Tagger::new(args.unwrap_or_default())))
     }
 
-    fn parse<T: ToString>(&self, input: T) -> anyhow::Result<Vec<Self::ParserResult>> {
+    fn parse<T: ToString>(&self, input: T) -> anyhow::Result<Vec<Self::Parsed>> {
         // 形態素解析
         let parsed = self.0.parse_str(input.to_string());
         // 各単語ごとに分割
@@ -41,7 +41,6 @@ impl Parser for MecabParser {
                         .into_iter()
                         .flat_map(|s| s.split(",").collect_vec())
                         .map(|s| s.to_string())
-                        .map(|s| if s == "*" { None } else { Some(s) })
                         .collect_vec(),
                 )
             })
