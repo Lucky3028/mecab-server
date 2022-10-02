@@ -13,7 +13,7 @@ pub trait Parser {
     fn parse<T: ToString>(&self, input: T) -> anyhow::Result<Vec<Self::Parsed>>;
 }
 
-#[derive(thiserror::Error, Debug, PartialEq)]
+#[derive(thiserror::Error, Debug, PartialEq, Eq)]
 pub enum ParserError {
     #[error("The path to dictionary doesn't exist")]
     DictionaryIsNotFound,

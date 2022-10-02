@@ -24,7 +24,7 @@ impl Parser for MecabParser {
         let parsed = self.0.parse_str(input.to_string());
         // 各単語ごとに分割
         let parsed = parsed
-            .split("\n")
+            .split('\n')
             .collect_vec()
             .into_iter()
             // 「EOS」と改行が含まれているので排除
@@ -32,14 +32,14 @@ impl Parser for MecabParser {
 
         Ok(parsed
             // 単語と形態の配列に分離
-            .map(|s| s.split("\t").collect_vec())
+            .map(|s| s.split('\t').collect_vec())
             .flat_map(|v| v.split_first().map(|t| (t.0.to_owned(), t.1.to_owned())))
             .map(|(word, details)| {
                 MecabParserResult::new(
                     word.to_string(),
                     details
                         .into_iter()
-                        .flat_map(|s| s.split(",").collect_vec())
+                        .flat_map(|s| s.split(',').collect_vec())
                         .map(|s| s.to_string())
                         .collect_vec(),
                 )
@@ -66,7 +66,7 @@ impl MecabParser {
             .map(|s| format!("{} {}", dic_path, s))
             .unwrap_or(dic_path);
 
-        Ok(Self::new(Some(args))?)
+        Self::new(Some(args))
     }
 }
 

@@ -69,6 +69,6 @@ impl Parser for NeoglogdParser {
             }
         );
 
-        Ok(parsed.into_iter().flat_map(|v| v).collect())
+        Ok(parsed.into_iter().flatten().collect())
     }
 }
