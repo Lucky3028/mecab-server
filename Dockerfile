@@ -6,10 +6,7 @@ RUN apt-get update \
     && cd /var \
     && git clone https://github.com/neologd/mecab-ipadic-neologd.git --depth=1 \
     && cd mecab-ipadic-neologd \
-    && ./bin/install-mecab-ipadic-neologd -y -n -a \
-    && mecab-config --dicdir \
-    && mecab-config --sysconfdir \
-    && which mecab
+    && ./bin/install-mecab-ipadic-neologd -y -n -a
 
 # clux/muslrust doesn't release 1.64.0 stable image at 2022/10/02
 FROM clux/muslrust:1.64.0-nightly-2022-08-06 AS chef
