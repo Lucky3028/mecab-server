@@ -8,7 +8,7 @@ use tracing::error;
 
 #[derive(Debug, thiserror::Error)]
 pub enum ApiError {
-    #[error("An error has occurred while parsing contents: {0}")]
+    #[error("{0}")]
     ParserError(#[from] ParserError),
     #[error(transparent)]
     Unknown(anyhow::Error),
@@ -18,9 +18,14 @@ impl IntoResponse for ApiError {
     fn into_response(self) -> Response {
         let (status, err_msg) = match self {
             Self::ParserError(_) => {
-                let err_msg = self.to_string();
-                error!("Parser Error! Here's the error message: {:?}", err_msg);
-                (StatusCode::INTERNAL_SERVER_ERROR, err_msg)
+                error!(
+                    "Parser Error! Here's the error message: {:?}",
+                    self.to_string()
+                );
+                (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    "An internal error has occurred while parsing contents".to_string(),
+                )
             }
             Self::Unknown(_) => {
                 let err_msg = self.to_string();
