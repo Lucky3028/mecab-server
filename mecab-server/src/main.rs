@@ -45,18 +45,11 @@ async fn main() {
     info!("Server listening on {}", socket);
     let app = Router::new()
         .route("/parse", post(handler::parse))
-        .fallback(fallback.into_service())
+        .fallback(handler::fallback.into_service())
         .layer(middleware::from_fn(my_middleware::print_request_response));
 
     axum::Server::bind(&socket)
         .serve(app.into_make_service())
         .await
         .unwrap();
-}
-
-async fn fallback(uri: Uri) -> impl IntoResponse {
-    (
-        StatusCode::NOT_FOUND,
-        ErrMsgJsonGenerator::new(format!("No route for '{}'", uri)).generate(),
-    )
 }
