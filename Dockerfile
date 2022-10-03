@@ -38,10 +38,10 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ENV NEOLOGD_DIC_PATH /usr/lib/x86_64-linux-gnu/mecab/dic
-COPY --from=dic --link $NEOLOGD_DIC_PATH/mecab-ipadic-neologd $NEOLOGD_DIC_PATH
+ENV NEOLOGD_DIC_PATH /usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd
+COPY --from=dic --link $NEOLOGD_DIC_PATH $NEOLOGD_DIC_PATH
 COPY --from=build --link /app/target/x86_64-unknown-linux-musl/release/mecab-server /mecab-server
 
-RUN ls -la $NEOLOGD_DIC_PATH && ls -la $NEOLOGD_DIC_PATH/mecab-ipadic-neologd
+RUN ls -la $NEOLOGD_DIC_PATH
 
 ENTRYPOINT ["/mecab-server"]
