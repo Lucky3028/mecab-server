@@ -16,7 +16,6 @@ mecab-wrapper = { path = "../mecab-wrapper" }
 
 argh = "0.1"
 axum = { version = "0.5", features = ["headers"] }
-axum-server = "0.4"
 hyper = "0.14"
 log = "0.4"
 serde = { version = "1.0", features = ["derive"] }
