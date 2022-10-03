@@ -1,10 +1,5 @@
 use argh::FromArgs;
-use axum::{
-    handler::Handler,
-    middleware,
-    routing::post,
-    Router,
-};
+use axum::{handler::Handler, middleware, routing::post, Router};
 use log::LevelFilter;
 use mecab_server::{handler, middleware as my_middleware};
 use std::net::SocketAddr;
