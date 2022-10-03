@@ -1,14 +1,12 @@
 use argh::FromArgs;
 use axum::{
     handler::Handler,
-    http::{StatusCode, Uri},
     middleware,
-    response::IntoResponse,
     routing::post,
     Router,
 };
 use log::LevelFilter;
-use mecab_server::{handler, middleware as my_middleware, shared::ErrMsgJsonGenerator};
+use mecab_server::{handler, middleware as my_middleware};
 use std::net::SocketAddr;
 use tracing::info;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
