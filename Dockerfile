@@ -2,12 +2,12 @@
 FROM ubuntu:22.04 as dic
 RUN apt-get update \
     && apt-get install -y g++ git make curl file xz-utils sudo mecab libmecab-dev mecab-ipadic-utf8 \
-    && cd /var \
-    && git clone https://github.com/neologd/mecab-ipadic-neologd.git --depth=1 \
-    && cd mecab-ipadic-neologd \
-    && ./bin/install-mecab-ipadic-neologd -y -n -a \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+WORKDIR /var
+RUN git clone https://github.com/neologd/mecab-ipadic-neologd.git --depth=1 \
+    && cd mecab-ipadic-neologd \
+    && ./bin/install-mecab-ipadic-neologd -y -n -a
 
 # clux/muslrust doesn't release 1.64.0 stable image at 2022/10/02
 FROM clux/muslrust:1.64.0-nightly-2022-08-06 AS chef
