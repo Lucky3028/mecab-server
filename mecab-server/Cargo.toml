@@ -23,3 +23,4 @@ serde_json = "1.0"
 tokio = { version = "1.21", features = ["rt", "rt-multi-thread", "macros"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["std", "env-filter"] }
+tokio-graceful-shutdown = "0.11"
