@@ -19,7 +19,7 @@ impl IntoResponse for ApiError {
         let (status, err_msg) = match self {
             Self::ParserError(_) => {
                 error!(
-                    "Parser Error! Here's the error message: {:?}",
+                    "Parser Error! Here's the error message: {}",
                     self.to_string()
                 );
                 (
@@ -29,7 +29,7 @@ impl IntoResponse for ApiError {
             }
             Self::Unknown(_) => {
                 let err_msg = self.to_string();
-                error!("Unknown Error! Here's the error message: {:?}", err_msg);
+                error!("Unknown Error! Here's the error message: {}", err_msg);
                 (StatusCode::INTERNAL_SERVER_ERROR, err_msg)
             }
         };
